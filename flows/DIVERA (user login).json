@@ -1,0 +1,419 @@
+[
+    {
+        "id": "64e2ec4f3cf50ae4",
+        "type": "subflow",
+        "name": "DIVERA (user login)",
+        "info": "",
+        "category": "",
+        "in": [
+            {
+                "x": 60,
+                "y": 80,
+                "wires": [
+                    {
+                        "id": "60ef6611d23b123d"
+                    }
+                ]
+            }
+        ],
+        "out": [
+            {
+                "x": 1120,
+                "y": 340,
+                "wires": [
+                    {
+                        "id": "d8c13332a1f39eaf",
+                        "port": 0
+                    }
+                ]
+            },
+            {
+                "x": 1120,
+                "y": 440,
+                "wires": [
+                    {
+                        "id": "3ff6b2eae3c6e704",
+                        "port": 0
+                    }
+                ]
+            },
+            {
+                "x": 1080,
+                "y": 140,
+                "wires": [
+                    {
+                        "id": "d66664c7ae43dd5a",
+                        "port": 0
+                    },
+                    {
+                        "id": "17eae5379f3baeb7",
+                        "port": 0
+                    }
+                ]
+            }
+        ],
+        "env": [
+            {
+                "name": "user",
+                "type": "str",
+                "value": ""
+            },
+            {
+                "name": "password",
+                "type": "str",
+                "value": ""
+            }
+        ],
+        "meta": {},
+        "color": "#DDAA99"
+    },
+    {
+        "id": "b1504421f8a65fb7",
+        "type": "comment",
+        "z": "64e2ec4f3cf50ae4",
+        "name": "DIVERA",
+        "info": "",
+        "x": 90,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "01375dab586d0d42",
+        "type": "http request",
+        "z": "64e2ec4f3cf50ae4",
+        "name": "",
+        "method": "POST",
+        "ret": "txt",
+        "paytoqs": "query",
+        "url": "",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "authType": "",
+        "senderr": false,
+        "x": 710,
+        "y": 80,
+        "wires": [
+            [
+                "d66664c7ae43dd5a"
+            ]
+        ]
+    },
+    {
+        "id": "36236306c6fc435f",
+        "type": "delay",
+        "z": "64e2ec4f3cf50ae4",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "10",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 1190,
+        "y": 240,
+        "wires": [
+            [
+                "fc3706d45dca3b11"
+            ]
+        ]
+    },
+    {
+        "id": "8ce4c06797ec92da",
+        "type": "http request",
+        "z": "64e2ec4f3cf50ae4",
+        "name": "",
+        "method": "GET",
+        "ret": "txt",
+        "paytoqs": "query",
+        "url": "",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "authType": "",
+        "senderr": false,
+        "credentials": {},
+        "x": 570,
+        "y": 240,
+        "wires": [
+            [
+                "17eae5379f3baeb7"
+            ]
+        ]
+    },
+    {
+        "id": "47548433ee44fcd0",
+        "type": "function",
+        "z": "64e2ec4f3cf50ae4",
+        "name": "build request message",
+        "func": "// --- get the security token\nvar regex = new RegExp(/<input.*name=\"_csrf\".*value=\"(\\S*)\".*>/gm);\nmatch = regex.exec(msg.payload);\n\n// --- set some vars\nconst user = env.get('user');\nconst password = env.get('password');\n\n// --- build message\nmsg = {\n    'url': 'https://app.divera247.com/login.html?step=1',\n    payload: {\n        '_csrf': match[1],\n        'Login[username]': user,\n        'Login[password]': password,\n        'Login[cookie]': ['0', '1'],\n        'Login[remember]': ['0', '1']\n    },\n    cookies: msg.responseCookies,\n    headers: {\n        'Content-Type': 'application/x-www-form-urlencoded'\n    }\n};\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 520,
+        "y": 80,
+        "wires": [
+            [
+                "01375dab586d0d42"
+            ]
+        ]
+    },
+    {
+        "id": "7207d8e69357870c",
+        "type": "function",
+        "z": "64e2ec4f3cf50ae4",
+        "name": "set timestamp",
+        "func": "msg.payload = {\n    ts: msg.payload.data.ts\n};\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1000,
+        "y": 240,
+        "wires": [
+            [
+                "36236306c6fc435f"
+            ]
+        ]
+    },
+    {
+        "id": "36a926967a2b320f",
+        "type": "json",
+        "z": "64e2ec4f3cf50ae4",
+        "name": "",
+        "property": "payload",
+        "action": "",
+        "pretty": false,
+        "x": 830,
+        "y": 240,
+        "wires": [
+            [
+                "7207d8e69357870c",
+                "3ff6b2eae3c6e704",
+                "d8c13332a1f39eaf"
+            ]
+        ]
+    },
+    {
+        "id": "fc3706d45dca3b11",
+        "type": "function",
+        "z": "64e2ec4f3cf50ae4",
+        "name": "assign session cookies",
+        "func": "msg.url = 'https://app.divera247.com/api/pull';\nmsg.cookies = msg.responseCookies;\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 370,
+        "y": 240,
+        "wires": [
+            [
+                "8ce4c06797ec92da"
+            ]
+        ]
+    },
+    {
+        "id": "259a486c88199cbd",
+        "type": "comment",
+        "z": "64e2ec4f3cf50ae4",
+        "name": "login",
+        "info": "Login als \"normaler\" User über eMail und Passwort",
+        "x": 310,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "0dc523c512e5820c",
+        "type": "function",
+        "z": "64e2ec4f3cf50ae4",
+        "name": "reset timestamp",
+        "func": "msg.payload = {\n    'ts': 0\n};\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 340,
+        "y": 160,
+        "wires": [
+            [
+                "fc3706d45dca3b11"
+            ]
+        ]
+    },
+    {
+        "id": "54c844738d12999a",
+        "type": "comment",
+        "z": "64e2ec4f3cf50ae4",
+        "name": "get updates",
+        "info": "",
+        "x": 330,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "17eae5379f3baeb7",
+        "type": "switch",
+        "z": "64e2ec4f3cf50ae4",
+        "name": "",
+        "property": "statusCode",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "neq",
+                "v": "200",
+                "vt": "num"
+            },
+            {
+                "t": "else"
+            }
+        ],
+        "checkall": "false",
+        "repair": false,
+        "outputs": 2,
+        "x": 710,
+        "y": 240,
+        "wires": [
+            [],
+            [
+                "36a926967a2b320f"
+            ]
+        ]
+    },
+    {
+        "id": "d66664c7ae43dd5a",
+        "type": "switch",
+        "z": "64e2ec4f3cf50ae4",
+        "name": "",
+        "property": "responseUrl",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "cont",
+                "v": "login.html?msg",
+                "vt": "str"
+            },
+            {
+                "t": "else"
+            }
+        ],
+        "checkall": "false",
+        "repair": false,
+        "outputs": 2,
+        "x": 850,
+        "y": 80,
+        "wires": [
+            [],
+            [
+                "0dc523c512e5820c"
+            ]
+        ]
+    },
+    {
+        "id": "60ef6611d23b123d",
+        "type": "http request",
+        "z": "64e2ec4f3cf50ae4",
+        "name": "",
+        "method": "GET",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "https://app.divera247.com/login.html",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "authType": "",
+        "senderr": false,
+        "credentials": {},
+        "x": 330,
+        "y": 80,
+        "wires": [
+            [
+                "47548433ee44fcd0"
+            ]
+        ]
+    },
+    {
+        "id": "3c625b2cfe8ed71c",
+        "type": "comment",
+        "z": "64e2ec4f3cf50ae4",
+        "name": "get full data object",
+        "info": "",
+        "x": 350,
+        "y": 120,
+        "wires": []
+    },
+    {
+        "id": "d8c13332a1f39eaf",
+        "type": "function",
+        "z": "64e2ec4f3cf50ae4",
+        "name": "alarm checker",
+        "func": "if(!msg.payload.data.alarm) {\n    return null;\n}\n\nvar alarm = msg.payload.data.alarm;\nvar items = Object.keys(alarm.items);\n\nvar alarms = global.get(`DIVERA.alarms`);\nif(!alarms){\n    alarms = [];\n}\n\nvar alarmObjects = [];\n\nitems.forEach(item => {\n    var currentAlarm = alarm.items[item];\n    \n    if(alarms.includes(currentAlarm.id)) {\n        return;\n    }\n    \n    alarmObjects.push(currentAlarm);\n    alarms.push(currentAlarm.id);\n});\n\nif(alarmObjects.length <= 0) {\n    return null;\n}\n\nglobal.set(`DIVERA.alarms`, alarms);\n\nmsg = {\n    'alarmObjects': alarmObjects\n};\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1000,
+        "y": 340,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "550547ad398dda7e",
+        "type": "comment",
+        "z": "64e2ec4f3cf50ae4",
+        "name": "ALARM output",
+        "info": "",
+        "x": 1180,
+        "y": 300,
+        "wires": []
+    },
+    {
+        "id": "9fb0349f628a73a6",
+        "type": "comment",
+        "z": "64e2ec4f3cf50ae4",
+        "name": "UPDATE output",
+        "info": "",
+        "x": 1180,
+        "y": 400,
+        "wires": []
+    },
+    {
+        "id": "3ff6b2eae3c6e704",
+        "type": "function",
+        "z": "64e2ec4f3cf50ae4",
+        "name": "update data",
+        "func": "return msg.payload.data;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 990,
+        "y": 440,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "712c34ecde0c1d58",
+        "type": "comment",
+        "z": "64e2ec4f3cf50ae4",
+        "name": "ERROR output",
+        "info": "",
+        "x": 1140,
+        "y": 100,
+        "wires": []
+    }
+]

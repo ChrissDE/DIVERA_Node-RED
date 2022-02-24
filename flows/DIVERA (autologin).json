@@ -1,0 +1,395 @@
+[
+    {
+        "id": "707193eb95efe55f",
+        "type": "subflow",
+        "name": "DIVERA (autologin)",
+        "info": "",
+        "category": "",
+        "in": [
+            {
+                "x": 60,
+                "y": 80,
+                "wires": [
+                    {
+                        "id": "f2349cd18980fa62"
+                    }
+                ]
+            }
+        ],
+        "out": [
+            {
+                "x": 1120,
+                "y": 340,
+                "wires": [
+                    {
+                        "id": "2950ff643a8ab295",
+                        "port": 0
+                    }
+                ]
+            },
+            {
+                "x": 1120,
+                "y": 440,
+                "wires": [
+                    {
+                        "id": "c7ed3c3a85c9eb7b",
+                        "port": 0
+                    }
+                ]
+            },
+            {
+                "x": 1080,
+                "y": 140,
+                "wires": [
+                    {
+                        "id": "4abe07a15b245c9f",
+                        "port": 0
+                    },
+                    {
+                        "id": "35c8f75a87eb3739",
+                        "port": 0
+                    }
+                ]
+            }
+        ],
+        "env": [
+            {
+                "name": "autologin",
+                "type": "str",
+                "value": ""
+            }
+        ],
+        "meta": {},
+        "color": "#DDAA99"
+    },
+    {
+        "id": "00da811cafaa4f5d",
+        "type": "comment",
+        "z": "707193eb95efe55f",
+        "name": "DIVERA",
+        "info": "",
+        "x": 90,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "cffb14dba2af8f35",
+        "type": "delay",
+        "z": "707193eb95efe55f",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "10",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 1190,
+        "y": 240,
+        "wires": [
+            [
+                "e95b3c7481e01486"
+            ]
+        ]
+    },
+    {
+        "id": "a866b21d16d30d50",
+        "type": "http request",
+        "z": "707193eb95efe55f",
+        "name": "",
+        "method": "GET",
+        "ret": "txt",
+        "paytoqs": "query",
+        "url": "",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "authType": "",
+        "senderr": false,
+        "credentials": {},
+        "x": 570,
+        "y": 240,
+        "wires": [
+            [
+                "4abe07a15b245c9f"
+            ]
+        ]
+    },
+    {
+        "id": "6ab5543c1406da9f",
+        "type": "function",
+        "z": "707193eb95efe55f",
+        "name": "set timestamp",
+        "func": "msg.payload = {\n    ts: msg.payload.data.ts\n};\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1000,
+        "y": 240,
+        "wires": [
+            [
+                "cffb14dba2af8f35"
+            ]
+        ]
+    },
+    {
+        "id": "fe77d5949e81e460",
+        "type": "json",
+        "z": "707193eb95efe55f",
+        "name": "",
+        "property": "payload",
+        "action": "",
+        "pretty": false,
+        "x": 830,
+        "y": 240,
+        "wires": [
+            [
+                "6ab5543c1406da9f",
+                "c7ed3c3a85c9eb7b",
+                "2950ff643a8ab295"
+            ]
+        ]
+    },
+    {
+        "id": "e95b3c7481e01486",
+        "type": "function",
+        "z": "707193eb95efe55f",
+        "name": "assign session cookies",
+        "func": "msg.url = 'https://app.divera247.com/api/pull';\nmsg.cookies = msg.responseCookies;\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 370,
+        "y": 240,
+        "wires": [
+            [
+                "a866b21d16d30d50"
+            ]
+        ]
+    },
+    {
+        "id": "a04b216a46ecc3a5",
+        "type": "comment",
+        "z": "707193eb95efe55f",
+        "name": "login",
+        "info": "Login als \"normaler\" User über eMail und Passwort",
+        "x": 310,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "f5cf5ec68911b5e5",
+        "type": "function",
+        "z": "707193eb95efe55f",
+        "name": "reset timestamp",
+        "func": "msg.payload = {\n    'ts': 0\n};\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 340,
+        "y": 160,
+        "wires": [
+            [
+                "e95b3c7481e01486"
+            ]
+        ]
+    },
+    {
+        "id": "d305a4e04b1d5915",
+        "type": "comment",
+        "z": "707193eb95efe55f",
+        "name": "get updates",
+        "info": "",
+        "x": 330,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "4abe07a15b245c9f",
+        "type": "switch",
+        "z": "707193eb95efe55f",
+        "name": "",
+        "property": "statusCode",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "neq",
+                "v": "200",
+                "vt": "num"
+            },
+            {
+                "t": "else"
+            }
+        ],
+        "checkall": "false",
+        "repair": false,
+        "outputs": 2,
+        "x": 710,
+        "y": 240,
+        "wires": [
+            [],
+            [
+                "fe77d5949e81e460"
+            ]
+        ]
+    },
+    {
+        "id": "35c8f75a87eb3739",
+        "type": "switch",
+        "z": "707193eb95efe55f",
+        "name": "",
+        "property": "responseUrl",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "cont",
+                "v": "login.html?msg",
+                "vt": "str"
+            },
+            {
+                "t": "else"
+            }
+        ],
+        "checkall": "false",
+        "repair": false,
+        "outputs": 2,
+        "x": 610,
+        "y": 80,
+        "wires": [
+            [],
+            [
+                "f5cf5ec68911b5e5"
+            ]
+        ]
+    },
+    {
+        "id": "a857c71b77046016",
+        "type": "comment",
+        "z": "707193eb95efe55f",
+        "name": "get full data object",
+        "info": "",
+        "x": 350,
+        "y": 120,
+        "wires": []
+    },
+    {
+        "id": "2950ff643a8ab295",
+        "type": "function",
+        "z": "707193eb95efe55f",
+        "name": "alarm checker",
+        "func": "if(!msg.payload.data.alarm) {\n    return null;\n}\n\nvar alarm = msg.payload.data.alarm;\nvar items = Object.keys(alarm.items);\n\nvar alarms = global.get(`DIVERA.alarms`);\nif(!alarms){\n    alarms = [];\n}\n\nvar alarmObjects = [];\n\nitems.forEach(item => {\n    var currentAlarm = alarm.items[item];\n    \n    if(alarms.includes(currentAlarm.id)) {\n        return;\n    }\n    \n    alarmObjects.push(currentAlarm);\n    alarms.push(currentAlarm.id);\n});\n\nif(alarmObjects.length <= 0) {\n    return null;\n}\n\nglobal.set(`DIVERA.alarms`, alarms);\n\nmsg = {\n    'alarmObjects': alarmObjects\n};\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1000,
+        "y": 340,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "a38893579765d038",
+        "type": "comment",
+        "z": "707193eb95efe55f",
+        "name": "ALARM output",
+        "info": "",
+        "x": 1180,
+        "y": 300,
+        "wires": []
+    },
+    {
+        "id": "05cf8c9b06d6e32b",
+        "type": "comment",
+        "z": "707193eb95efe55f",
+        "name": "UPDATE output",
+        "info": "",
+        "x": 1180,
+        "y": 400,
+        "wires": []
+    },
+    {
+        "id": "c7ed3c3a85c9eb7b",
+        "type": "function",
+        "z": "707193eb95efe55f",
+        "name": "update data",
+        "func": "return msg.payload.data;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 990,
+        "y": 440,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "e0c8e002bc1c17ee",
+        "type": "comment",
+        "z": "707193eb95efe55f",
+        "name": "ERROR output",
+        "info": "",
+        "x": 1140,
+        "y": 100,
+        "wires": []
+    },
+    {
+        "id": "f2349cd18980fa62",
+        "type": "function",
+        "z": "707193eb95efe55f",
+        "name": "clear msg",
+        "func": "// --- get autologin from environment variables\nconst autologin = env.get('autologin');\n\n// --- build request \nmsg = {\n    'url': 'https://app.divera247.com/monitor/1.html',\n    payload: {\n        'autologin': autologin\n    }\n};\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 320,
+        "y": 80,
+        "wires": [
+            [
+                "366c4d99e8da7a24"
+            ]
+        ]
+    },
+    {
+        "id": "366c4d99e8da7a24",
+        "type": "http request",
+        "z": "707193eb95efe55f",
+        "name": "",
+        "method": "GET",
+        "ret": "txt",
+        "paytoqs": "query",
+        "url": "",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "authType": "",
+        "senderr": false,
+        "credentials": {
+            "user": "",
+            "password": ""
+        },
+        "x": 470,
+        "y": 80,
+        "wires": [
+            [
+                "35c8f75a87eb3739"
+            ]
+        ]
+    }
+]

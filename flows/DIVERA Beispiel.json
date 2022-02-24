@@ -1,0 +1,1037 @@
+[
+    {
+        "id": "64e2ec4f3cf50ae4",
+        "type": "subflow",
+        "name": "DIVERA (user login)",
+        "info": "",
+        "category": "",
+        "in": [
+            {
+                "x": 60,
+                "y": 80,
+                "wires": [
+                    {
+                        "id": "60ef6611d23b123d"
+                    }
+                ]
+            }
+        ],
+        "out": [
+            {
+                "x": 1120,
+                "y": 340,
+                "wires": [
+                    {
+                        "id": "d8c13332a1f39eaf",
+                        "port": 0
+                    }
+                ]
+            },
+            {
+                "x": 1120,
+                "y": 440,
+                "wires": [
+                    {
+                        "id": "3ff6b2eae3c6e704",
+                        "port": 0
+                    }
+                ]
+            },
+            {
+                "x": 1080,
+                "y": 140,
+                "wires": [
+                    {
+                        "id": "d66664c7ae43dd5a",
+                        "port": 0
+                    },
+                    {
+                        "id": "17eae5379f3baeb7",
+                        "port": 0
+                    }
+                ]
+            }
+        ],
+        "env": [
+            {
+                "name": "user",
+                "type": "str",
+                "value": ""
+            },
+            {
+                "name": "password",
+                "type": "str",
+                "value": ""
+            }
+        ],
+        "meta": {},
+        "color": "#DDAA99"
+    },
+    {
+        "id": "b1504421f8a65fb7",
+        "type": "comment",
+        "z": "64e2ec4f3cf50ae4",
+        "name": "DIVERA",
+        "info": "",
+        "x": 90,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "01375dab586d0d42",
+        "type": "http request",
+        "z": "64e2ec4f3cf50ae4",
+        "name": "",
+        "method": "POST",
+        "ret": "txt",
+        "paytoqs": "query",
+        "url": "",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "authType": "",
+        "senderr": false,
+        "x": 710,
+        "y": 80,
+        "wires": [
+            [
+                "d66664c7ae43dd5a"
+            ]
+        ]
+    },
+    {
+        "id": "36236306c6fc435f",
+        "type": "delay",
+        "z": "64e2ec4f3cf50ae4",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "10",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 1190,
+        "y": 240,
+        "wires": [
+            [
+                "fc3706d45dca3b11"
+            ]
+        ]
+    },
+    {
+        "id": "8ce4c06797ec92da",
+        "type": "http request",
+        "z": "64e2ec4f3cf50ae4",
+        "name": "",
+        "method": "GET",
+        "ret": "txt",
+        "paytoqs": "query",
+        "url": "",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "authType": "",
+        "senderr": false,
+        "credentials": {},
+        "x": 570,
+        "y": 240,
+        "wires": [
+            [
+                "17eae5379f3baeb7"
+            ]
+        ]
+    },
+    {
+        "id": "47548433ee44fcd0",
+        "type": "function",
+        "z": "64e2ec4f3cf50ae4",
+        "name": "build request message",
+        "func": "// --- get the security token\nvar regex = new RegExp(/<input.*name=\"_csrf\".*value=\"(\\S*)\".*>/gm);\nmatch = regex.exec(msg.payload);\n\n// --- set some vars\nconst user = env.get('user');\nconst password = env.get('password');\n\n// --- build message\nmsg = {\n    'url': 'https://app.divera247.com/login.html?step=1',\n    payload: {\n        '_csrf': match[1],\n        'Login[username]': user,\n        'Login[password]': password,\n        'Login[cookie]': ['0', '1'],\n        'Login[remember]': ['0', '1']\n    },\n    cookies: msg.responseCookies,\n    headers: {\n        'Content-Type': 'application/x-www-form-urlencoded'\n    }\n};\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 520,
+        "y": 80,
+        "wires": [
+            [
+                "01375dab586d0d42"
+            ]
+        ]
+    },
+    {
+        "id": "7207d8e69357870c",
+        "type": "function",
+        "z": "64e2ec4f3cf50ae4",
+        "name": "set timestamp",
+        "func": "msg.payload = {\n    ts: msg.payload.data.ts\n};\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1000,
+        "y": 240,
+        "wires": [
+            [
+                "36236306c6fc435f"
+            ]
+        ]
+    },
+    {
+        "id": "36a926967a2b320f",
+        "type": "json",
+        "z": "64e2ec4f3cf50ae4",
+        "name": "",
+        "property": "payload",
+        "action": "",
+        "pretty": false,
+        "x": 830,
+        "y": 240,
+        "wires": [
+            [
+                "7207d8e69357870c",
+                "3ff6b2eae3c6e704",
+                "d8c13332a1f39eaf"
+            ]
+        ]
+    },
+    {
+        "id": "fc3706d45dca3b11",
+        "type": "function",
+        "z": "64e2ec4f3cf50ae4",
+        "name": "assign session cookies",
+        "func": "msg.url = 'https://app.divera247.com/api/pull';\nmsg.cookies = msg.responseCookies;\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 370,
+        "y": 240,
+        "wires": [
+            [
+                "8ce4c06797ec92da"
+            ]
+        ]
+    },
+    {
+        "id": "259a486c88199cbd",
+        "type": "comment",
+        "z": "64e2ec4f3cf50ae4",
+        "name": "login",
+        "info": "Login als \"normaler\" User über eMail und Passwort",
+        "x": 310,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "0dc523c512e5820c",
+        "type": "function",
+        "z": "64e2ec4f3cf50ae4",
+        "name": "reset timestamp",
+        "func": "msg.payload = {\n    'ts': 0\n};\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 340,
+        "y": 160,
+        "wires": [
+            [
+                "fc3706d45dca3b11"
+            ]
+        ]
+    },
+    {
+        "id": "54c844738d12999a",
+        "type": "comment",
+        "z": "64e2ec4f3cf50ae4",
+        "name": "get updates",
+        "info": "",
+        "x": 330,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "17eae5379f3baeb7",
+        "type": "switch",
+        "z": "64e2ec4f3cf50ae4",
+        "name": "",
+        "property": "statusCode",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "neq",
+                "v": "200",
+                "vt": "num"
+            },
+            {
+                "t": "else"
+            }
+        ],
+        "checkall": "false",
+        "repair": false,
+        "outputs": 2,
+        "x": 710,
+        "y": 240,
+        "wires": [
+            [],
+            [
+                "36a926967a2b320f"
+            ]
+        ]
+    },
+    {
+        "id": "d66664c7ae43dd5a",
+        "type": "switch",
+        "z": "64e2ec4f3cf50ae4",
+        "name": "",
+        "property": "responseUrl",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "cont",
+                "v": "login.html?msg",
+                "vt": "str"
+            },
+            {
+                "t": "else"
+            }
+        ],
+        "checkall": "false",
+        "repair": false,
+        "outputs": 2,
+        "x": 850,
+        "y": 80,
+        "wires": [
+            [],
+            [
+                "0dc523c512e5820c"
+            ]
+        ]
+    },
+    {
+        "id": "60ef6611d23b123d",
+        "type": "http request",
+        "z": "64e2ec4f3cf50ae4",
+        "name": "",
+        "method": "GET",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "https://app.divera247.com/login.html",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "authType": "",
+        "senderr": false,
+        "credentials": {},
+        "x": 330,
+        "y": 80,
+        "wires": [
+            [
+                "47548433ee44fcd0"
+            ]
+        ]
+    },
+    {
+        "id": "3c625b2cfe8ed71c",
+        "type": "comment",
+        "z": "64e2ec4f3cf50ae4",
+        "name": "get full data object",
+        "info": "",
+        "x": 350,
+        "y": 120,
+        "wires": []
+    },
+    {
+        "id": "d8c13332a1f39eaf",
+        "type": "function",
+        "z": "64e2ec4f3cf50ae4",
+        "name": "alarm checker",
+        "func": "if(!msg.payload.data.alarm) {\n    return null;\n}\n\nvar alarm = msg.payload.data.alarm;\nvar items = Object.keys(alarm.items);\n\nvar alarms = global.get(`DIVERA.alarms`);\nif(!alarms){\n    alarms = [];\n}\n\nvar alarmObjects = [];\n\nitems.forEach(item => {\n    var currentAlarm = alarm.items[item];\n    \n    if(alarms.includes(currentAlarm.id)) {\n        return;\n    }\n    \n    alarmObjects.push(currentAlarm);\n    alarms.push(currentAlarm.id);\n});\n\nif(alarmObjects.length <= 0) {\n    return null;\n}\n\nglobal.set(`DIVERA.alarms`, alarms);\n\nmsg = {\n    'alarmObjects': alarmObjects\n};\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1000,
+        "y": 340,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "550547ad398dda7e",
+        "type": "comment",
+        "z": "64e2ec4f3cf50ae4",
+        "name": "ALARM output",
+        "info": "",
+        "x": 1180,
+        "y": 300,
+        "wires": []
+    },
+    {
+        "id": "9fb0349f628a73a6",
+        "type": "comment",
+        "z": "64e2ec4f3cf50ae4",
+        "name": "UPDATE output",
+        "info": "",
+        "x": 1180,
+        "y": 400,
+        "wires": []
+    },
+    {
+        "id": "3ff6b2eae3c6e704",
+        "type": "function",
+        "z": "64e2ec4f3cf50ae4",
+        "name": "update data",
+        "func": "return msg.payload.data;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 990,
+        "y": 440,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "712c34ecde0c1d58",
+        "type": "comment",
+        "z": "64e2ec4f3cf50ae4",
+        "name": "ERROR output",
+        "info": "",
+        "x": 1140,
+        "y": 100,
+        "wires": []
+    },
+    {
+        "id": "707193eb95efe55f",
+        "type": "subflow",
+        "name": "DIVERA (autologin)",
+        "info": "",
+        "category": "",
+        "in": [
+            {
+                "x": 60,
+                "y": 80,
+                "wires": [
+                    {
+                        "id": "f2349cd18980fa62"
+                    }
+                ]
+            }
+        ],
+        "out": [
+            {
+                "x": 1120,
+                "y": 340,
+                "wires": [
+                    {
+                        "id": "2950ff643a8ab295",
+                        "port": 0
+                    }
+                ]
+            },
+            {
+                "x": 1120,
+                "y": 440,
+                "wires": [
+                    {
+                        "id": "c7ed3c3a85c9eb7b",
+                        "port": 0
+                    }
+                ]
+            },
+            {
+                "x": 1080,
+                "y": 140,
+                "wires": [
+                    {
+                        "id": "4abe07a15b245c9f",
+                        "port": 0
+                    },
+                    {
+                        "id": "35c8f75a87eb3739",
+                        "port": 0
+                    }
+                ]
+            }
+        ],
+        "env": [
+            {
+                "name": "autologin",
+                "type": "str",
+                "value": ""
+            }
+        ],
+        "meta": {},
+        "color": "#DDAA99"
+    },
+    {
+        "id": "00da811cafaa4f5d",
+        "type": "comment",
+        "z": "707193eb95efe55f",
+        "name": "DIVERA",
+        "info": "",
+        "x": 90,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "cffb14dba2af8f35",
+        "type": "delay",
+        "z": "707193eb95efe55f",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "10",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 1190,
+        "y": 240,
+        "wires": [
+            [
+                "e95b3c7481e01486"
+            ]
+        ]
+    },
+    {
+        "id": "a866b21d16d30d50",
+        "type": "http request",
+        "z": "707193eb95efe55f",
+        "name": "",
+        "method": "GET",
+        "ret": "txt",
+        "paytoqs": "query",
+        "url": "",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "authType": "",
+        "senderr": false,
+        "credentials": {},
+        "x": 570,
+        "y": 240,
+        "wires": [
+            [
+                "4abe07a15b245c9f"
+            ]
+        ]
+    },
+    {
+        "id": "6ab5543c1406da9f",
+        "type": "function",
+        "z": "707193eb95efe55f",
+        "name": "set timestamp",
+        "func": "msg.payload = {\n    ts: msg.payload.data.ts\n};\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1000,
+        "y": 240,
+        "wires": [
+            [
+                "cffb14dba2af8f35"
+            ]
+        ]
+    },
+    {
+        "id": "fe77d5949e81e460",
+        "type": "json",
+        "z": "707193eb95efe55f",
+        "name": "",
+        "property": "payload",
+        "action": "",
+        "pretty": false,
+        "x": 830,
+        "y": 240,
+        "wires": [
+            [
+                "6ab5543c1406da9f",
+                "c7ed3c3a85c9eb7b",
+                "2950ff643a8ab295"
+            ]
+        ]
+    },
+    {
+        "id": "e95b3c7481e01486",
+        "type": "function",
+        "z": "707193eb95efe55f",
+        "name": "assign session cookies",
+        "func": "msg.url = 'https://app.divera247.com/api/pull';\nmsg.cookies = msg.responseCookies;\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 370,
+        "y": 240,
+        "wires": [
+            [
+                "a866b21d16d30d50"
+            ]
+        ]
+    },
+    {
+        "id": "a04b216a46ecc3a5",
+        "type": "comment",
+        "z": "707193eb95efe55f",
+        "name": "login",
+        "info": "Login als \"normaler\" User über eMail und Passwort",
+        "x": 310,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "f5cf5ec68911b5e5",
+        "type": "function",
+        "z": "707193eb95efe55f",
+        "name": "reset timestamp",
+        "func": "msg.payload = {\n    'ts': 0\n};\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 340,
+        "y": 160,
+        "wires": [
+            [
+                "e95b3c7481e01486"
+            ]
+        ]
+    },
+    {
+        "id": "d305a4e04b1d5915",
+        "type": "comment",
+        "z": "707193eb95efe55f",
+        "name": "get updates",
+        "info": "",
+        "x": 330,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "4abe07a15b245c9f",
+        "type": "switch",
+        "z": "707193eb95efe55f",
+        "name": "",
+        "property": "statusCode",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "neq",
+                "v": "200",
+                "vt": "num"
+            },
+            {
+                "t": "else"
+            }
+        ],
+        "checkall": "false",
+        "repair": false,
+        "outputs": 2,
+        "x": 710,
+        "y": 240,
+        "wires": [
+            [],
+            [
+                "fe77d5949e81e460"
+            ]
+        ]
+    },
+    {
+        "id": "35c8f75a87eb3739",
+        "type": "switch",
+        "z": "707193eb95efe55f",
+        "name": "",
+        "property": "responseUrl",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "cont",
+                "v": "login.html?msg",
+                "vt": "str"
+            },
+            {
+                "t": "else"
+            }
+        ],
+        "checkall": "false",
+        "repair": false,
+        "outputs": 2,
+        "x": 610,
+        "y": 80,
+        "wires": [
+            [],
+            [
+                "f5cf5ec68911b5e5"
+            ]
+        ]
+    },
+    {
+        "id": "a857c71b77046016",
+        "type": "comment",
+        "z": "707193eb95efe55f",
+        "name": "get full data object",
+        "info": "",
+        "x": 350,
+        "y": 120,
+        "wires": []
+    },
+    {
+        "id": "2950ff643a8ab295",
+        "type": "function",
+        "z": "707193eb95efe55f",
+        "name": "alarm checker",
+        "func": "if(!msg.payload.data.alarm) {\n    return null;\n}\n\nvar alarm = msg.payload.data.alarm;\nvar items = Object.keys(alarm.items);\n\nvar alarms = global.get(`DIVERA.alarms`);\nif(!alarms){\n    alarms = [];\n}\n\nvar alarmObjects = [];\n\nitems.forEach(item => {\n    var currentAlarm = alarm.items[item];\n    \n    if(alarms.includes(currentAlarm.id)) {\n        return;\n    }\n    \n    alarmObjects.push(currentAlarm);\n    alarms.push(currentAlarm.id);\n});\n\nif(alarmObjects.length <= 0) {\n    return null;\n}\n\nglobal.set(`DIVERA.alarms`, alarms);\n\nmsg = {\n    'alarmObjects': alarmObjects\n};\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1000,
+        "y": 340,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "a38893579765d038",
+        "type": "comment",
+        "z": "707193eb95efe55f",
+        "name": "ALARM output",
+        "info": "",
+        "x": 1180,
+        "y": 300,
+        "wires": []
+    },
+    {
+        "id": "05cf8c9b06d6e32b",
+        "type": "comment",
+        "z": "707193eb95efe55f",
+        "name": "UPDATE output",
+        "info": "",
+        "x": 1180,
+        "y": 400,
+        "wires": []
+    },
+    {
+        "id": "c7ed3c3a85c9eb7b",
+        "type": "function",
+        "z": "707193eb95efe55f",
+        "name": "update data",
+        "func": "return msg.payload.data;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 990,
+        "y": 440,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "e0c8e002bc1c17ee",
+        "type": "comment",
+        "z": "707193eb95efe55f",
+        "name": "ERROR output",
+        "info": "",
+        "x": 1140,
+        "y": 100,
+        "wires": []
+    },
+    {
+        "id": "f2349cd18980fa62",
+        "type": "function",
+        "z": "707193eb95efe55f",
+        "name": "clear msg",
+        "func": "// --- get autologin from environment variables\nconst autologin = env.get('autologin');\n\n// --- build request \nmsg = {\n    'url': 'https://app.divera247.com/monitor/1.html',\n    payload: {\n        'autologin': autologin\n    }\n};\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 320,
+        "y": 80,
+        "wires": [
+            [
+                "366c4d99e8da7a24"
+            ]
+        ]
+    },
+    {
+        "id": "366c4d99e8da7a24",
+        "type": "http request",
+        "z": "707193eb95efe55f",
+        "name": "",
+        "method": "GET",
+        "ret": "txt",
+        "paytoqs": "query",
+        "url": "",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "authType": "",
+        "senderr": false,
+        "credentials": {
+            "user": "",
+            "password": ""
+        },
+        "x": 470,
+        "y": 80,
+        "wires": [
+            [
+                "35c8f75a87eb3739"
+            ]
+        ]
+    },
+    {
+        "id": "512d92d83c4e0dc3",
+        "type": "tab",
+        "label": "DIVERA Beispiel",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "86bc8468e88afd85",
+        "type": "inject",
+        "z": "512d92d83c4e0dc3",
+        "name": "DIVERA (autologin) starten",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 180,
+        "y": 80,
+        "wires": [
+            [
+                "46aae1e9d9820cdb"
+            ]
+        ]
+    },
+    {
+        "id": "7ad0bf30d10c76b5",
+        "type": "comment",
+        "z": "512d92d83c4e0dc3",
+        "name": "Trigger definieren",
+        "info": "",
+        "x": 130,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "46aae1e9d9820cdb",
+        "type": "subflow:707193eb95efe55f",
+        "z": "512d92d83c4e0dc3",
+        "name": "",
+        "env": [
+            {
+                "name": "autologin",
+                "value": "abc123def456GH-a1b2c3d-123456abcdef789101112GHIJKL0000000000000_",
+                "type": "str"
+            }
+        ],
+        "x": 470,
+        "y": 80,
+        "wires": [
+            [
+                "de672f9406043c1e"
+            ],
+            [
+                "86c1da1e6825b46b"
+            ],
+            [
+                "d6f38af60566367a"
+            ]
+        ]
+    },
+    {
+        "id": "de672f9406043c1e",
+        "type": "debug",
+        "z": "512d92d83c4e0dc3",
+        "name": "ALARM erkannt",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 740,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "d6f38af60566367a",
+        "type": "debug",
+        "z": "512d92d83c4e0dc3",
+        "name": "FEHLER erkannt",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 750,
+        "y": 120,
+        "wires": []
+    },
+    {
+        "id": "86c1da1e6825b46b",
+        "type": "debug",
+        "z": "512d92d83c4e0dc3",
+        "name": "UPDATE vollzogen",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 750,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "403090b50d85f2a1",
+        "type": "inject",
+        "z": "512d92d83c4e0dc3",
+        "name": "DIVERA (user login) starten",
+        "props": [],
+        "repeat": "",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 180,
+        "y": 320,
+        "wires": [
+            [
+                "a32eb04fa2c55d5b"
+            ]
+        ]
+    },
+    {
+        "id": "785860447417c046",
+        "type": "comment",
+        "z": "512d92d83c4e0dc3",
+        "name": "Trigger definieren",
+        "info": "",
+        "x": 130,
+        "y": 280,
+        "wires": []
+    },
+    {
+        "id": "cbcc5583fb06e773",
+        "type": "debug",
+        "z": "512d92d83c4e0dc3",
+        "name": "ALARM erkannt",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 740,
+        "y": 280,
+        "wires": []
+    },
+    {
+        "id": "212f843555ed0b71",
+        "type": "debug",
+        "z": "512d92d83c4e0dc3",
+        "name": "FEHLER erkannt",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 750,
+        "y": 360,
+        "wires": []
+    },
+    {
+        "id": "111ba6cad3b2e13d",
+        "type": "debug",
+        "z": "512d92d83c4e0dc3",
+        "name": "UPDATE vollzogen",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 750,
+        "y": 320,
+        "wires": []
+    },
+    {
+        "id": "a32eb04fa2c55d5b",
+        "type": "subflow:64e2ec4f3cf50ae4",
+        "z": "512d92d83c4e0dc3",
+        "name": "",
+        "env": [
+            {
+                "name": "user",
+                "value": "abc@example.com",
+                "type": "str"
+            },
+            {
+                "name": "password",
+                "value": "hello123",
+                "type": "str"
+            }
+        ],
+        "x": 470,
+        "y": 320,
+        "wires": [
+            [
+                "cbcc5583fb06e773"
+            ],
+            [
+                "111ba6cad3b2e13d"
+            ],
+            [
+                "212f843555ed0b71"
+            ]
+        ]
+    }
+]
