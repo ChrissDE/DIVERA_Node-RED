@@ -13,10 +13,10 @@ Im Produktivbetrieb passieren noch ein paar andere Dinge und man kann die Steckd
 ### Übersicht
 Für die Nutzung von DIVERA in Node-RED werden zwei Subflows bereitgestellt:
 
-1) DIVERA (autologin)
+1) **DIVERA (autologin)**:
     Hierbei erfolgt der Login über den Autologin-Monitorbenutzer. Der Monitorbenutzer kann erweiterte Rechte zum Lesen von Alarmierungen erhalten und auf die benötigten Daten (accesskey) kann nur der Admin zugreifen.
 
-2) DIVERA (user login)
+2) **DIVERA (user login)**:
     Hier wird für den einzelnen Benutzer die Alarmierung abgefragt. Es sind eMail-Adresse und Passwort erforderlich. Es werden nur Alarmierungen empfangen, die auch für diesen Benutzer relevant sind.
 
 ### Import & Nutzung
@@ -40,13 +40,16 @@ Eine Fehlerbehandlung wurde nicht in den Subflows realisiert und sollte im jewei
 Zunächst muss ein Monitorbenutzer unter "Verwaltung => Setup => Monitore => Monitor-Benutzer" angelegt werden. Unter "AUTOLOGIN" muss diese Funktion aktiviert werden. Anschließend sieht man den Autologin-Key.
 
 Dieser wird im Subflow unter den Umgebungsvariablen angegeben:
+
 ![Bild:DIVERA_autologin_config.png](/images/DIVERA_autologin_config.png)
 
 ### DIVERA (user login) konfigurieren
 Hier muss lediglich die eMail-Adresse und das Passwort des gewünschten Benutzers in den Umgebungsvariablen eingetragen werden:
-![Bild:DIVERA (user login) config.png](/images/DIVERA (user login) config.png)
 
-> Es sollten nicht mehrere Subflow-Instanzen parallel gestertet werden, um die Anfragelast auf dem Server gering zu halten!
+![Bild:DIVERA_userlogin_config.png](/images/DIVERA_userlogin_config.png)
+
+### Hinweis
+**Es sollten nicht mehrere Subflow-Instanzen parallel gestertet werden, um die Anfragelast auf dem Server gering zu halten!**
 
 ### Dateien
 DIVERA (autologin)
