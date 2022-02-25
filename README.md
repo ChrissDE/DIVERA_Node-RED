@@ -20,8 +20,8 @@ Für die Nutzung von DIVERA in Node-RED werden zwei Subflows bereitgestellt:
     Hier wird für den einzelnen Benutzer die Alarmierung abgefragt. Es sind eMail-Adresse und Passwort erforderlich. Es werden nur Alarmierungen empfangen, die auch für diesen Benutzer relevant sind.
 
 ### Import & Nutzung
-Mit dem Import der Datei [DIVERA Beispiel.json](flows/DIVERA Beispiel.json) werden zwei Subflows und ein Beispiel-Flow erstellt.
-![Bild:DIVERA Beispiel.png](/images/DIVERA Beispiel.png)
+Mit dem Import der Datei [DIVERA_Beispiel.json](/flows/DIVERA_Beispiel.json) werden zwei Subflows und ein Beispiel-Flow erstellt.
+![Bild:DIVERA_Beispiel.png](/images/DIVERA_Beispiel.png)
 
 Die Subflows müssen nur einmalig gestartet werden, etwa über einen Start-Trigger, der den Flow einmalig bei Start des Servers startet.
 
@@ -40,7 +40,7 @@ Eine Fehlerbehandlung wurde nicht in den Subflows realisiert und sollte im jewei
 Zunächst muss ein Monitorbenutzer unter "Verwaltung => Setup => Monitore => Monitor-Benutzer" angelegt werden. Unter "AUTOLOGIN" muss diese Funktion aktiviert werden. Anschließend sieht man den Autologin-Key.
 
 Dieser wird im Subflow unter den Umgebungsvariablen angegeben:
-![Bild:DIVERA (autologin) config.png](/images/DIVERA (autologin) config.png)
+![Bild:DIVERA_autologin_config.png](/images/DIVERA_autologin_config.png)
 
 ### DIVERA (user login) konfigurieren
 Hier muss lediglich die eMail-Adresse und das Passwort des gewünschten Benutzers in den Umgebungsvariablen eingetragen werden:
@@ -50,9 +50,9 @@ Hier muss lediglich die eMail-Adresse und das Passwort des gewünschten Benutzer
 
 ### Dateien
 DIVERA (autologin)
-[Datei:DIVERA (autologin).json](flows/DIVERA (autologin).json)
-![Bild:DIVERA (autologin).png](/images/DIVERA (autologin).png)
+[Datei:DIVERA_autologin.json](/flows/DIVERA_autologin.json)
+![Bild:DIVERA_autologin.png](/images/DIVERA_autologin.png)
 
 DIVERA (user login)
-[Datei:DIVERA (user login).json](flows/DIVERA (user login).json)
-![Bild:DIVERA (user login).png](/images/DIVERA (user login).png)
+[Datei:DIVERA_userlogin.json](/flows/DIVERA_userlogin.json)
+![Bild:DIVERA_userlogin.png](/images/DIVERA_userlogin.png)
